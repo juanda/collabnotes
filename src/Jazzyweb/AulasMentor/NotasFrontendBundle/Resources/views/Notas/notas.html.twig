@@ -1,0 +1,36 @@
+<div class="span4">
+    
+
+        <ul class="nav nav-list">
+            <li class="nav-header">Notas</li>    
+            <li>
+                <form id="form_buscar" action="{{ path("jamn_buscar") }}" method="post">
+                    <input class="buscar ui-corner-all" size="20" name="termino" id="termino"/>
+                    <button type=submit" class="btn_buscar"> Buscar</button>
+                </form>
+                <p class="text-success">
+                {% if notas|length > 0 %}
+                {{ notas | length }} notas encontradas
+                {% endif %}
+                </p>
+            </li>
+            <li class="divider"></li>
+            {% for nota in notas %}
+                
+            <li class="{{ nota.selected? 'active' :   '' }}">                
+              <a href="{{ path('jamn_nota',{"id": nota.id}) }}">
+                 <h6>{{ nota.titulo }}, <em>{{ nota.fecha.date }}</em></h6>
+                 <small>{{ nota.texto|slice(0,80)|raw }} {{ nota.texto | length < 80 ? '' : '...' }}</small>
+              </a>
+           </li>
+           <li class="divider"></li>                                   
+            {% else %}                
+           <p class="text-error">No se han encontrado notas</p>
+            {% endfor %}
+                        
+           </ul>
+         
+      </div><!--/span-->
+
+
+

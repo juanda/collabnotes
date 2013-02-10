@@ -1,0 +1,68 @@
+{% extends 'JAMNotasFrontendBundle:Notas:layout-etiquetas-notas.html.twig' %}
+
+{% block javascripts %}
+
+{{ parent() }}
+
+<script>
+var btnCreate = $("#btn_crear");
+var btnEdit = $("#btn_editar");
+var btnDelete= $("#btn_borrar");
+
+btnCreate.click(function(){
+     window.location = '{{ path('jamn_nueva')}}';
+});
+
+{% if nota_seleccionada %}
+btnEdit.click(function(){
+     window.location = '{{ path('jamn_editar', {'id': nota_seleccionada.id }) }}';
+});
+
+btnDelete.click(function(){
+    $("#form_borrar").submit();
+});
+
+{% endif %}
+</script>
+
+{% endblock %}
+
+
+{% block detalle_y_edicion %}
+            
+   {% if nota_seleccionada %}
+      <div id="confirma-borrado"></div>      
+      
+      <button id="btn_crear" class="btn btn-primary" href="{{ path('jamn_nueva')}}"><i class="icon-plus"></i> crear</button>                     
+      <button id="btn_editar" class="btn btn-primary" href="{{ path('jamn_editar', {'id': nota_seleccionada.id }) }}"><i class="icon-pencil"></i> editar</button>
+      <button id="btn_borrar" class="btn btn-danger" type="submit"><i class="icon-remove"></i> borrar</button>
+      <form id="form_borrar" action="{{ path('jamn_borrar', { 'id': nota_seleccionada.id }) }}" method="post">
+          {{ form_widget(delete_form) }}
+      </form>
+      
+      <li>
+        {% for etiqueta in nota_seleccionada.etiquetas %}
+        <span class="label label-info">{{ etiqueta.texto }}</span>
+        {% endfor %}
+      </li>
+      
+      {% if nota_seleccionada.path %}
+      <li>
+         {% set urlFile = asset( nota_seleccionada.webPath(app.user.getUsername) ) %}
+         <a href="{{ urlFile }}"><i class="icon-file"></i>{{ nota_seleccionada.path}}</a>                           
+      </li>      
+      {% endif %}
+
+      <li>
+         <h5>{{ nota_seleccionada.titulo }} <i>({{ nota_seleccionada.fecha.date }})</i> </h5> 
+      </li>
+         
+      <li>
+         {{ nota_seleccionada.texto|raw }}
+      </li>
+
+      {% else %}
+      <button id="btn_crear" class="btn btn-primary">crear</button>         
+      {% endif %}
+
+  {% endblock %}

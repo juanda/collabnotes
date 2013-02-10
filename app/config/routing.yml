@@ -1,0 +1,4 @@
+jam_notas_frontend:
+    resource: "@JAMNotasFrontendBundle/Resources/config/routing.yml"
+    prefix:   /notas
+

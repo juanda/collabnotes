@@ -1,0 +1,60 @@
+security:
+     encoders:
+         Symfony\Component\Security\Core\User\User: plaintext
+         Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Usuario: plaintext
+
+     role_hierarchy:
+         ROLE_ADMIN:       ROLE_USER
+         ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+         ROLE_PREMIUM: [ ROLE_REGISTRADO ]
+
+     providers:
+         in_memory:
+             memory:
+               users:
+                 alberto:  { password: pruebas, roles: [ 'ROLE_REGISTRADO' ] }
+                 maria: { password: pruebas, roles: [ 'ROLE_PREMIUM' ] }
+                 miguel: { password: pruebas, roles: [ 'ROLE_ADMIN' ] }
+
+         base_datos:
+             entity: { class: JAMNotasFrontendBundle:Usuario, property: username }
+
+     firewalls:
+         dev:
+             pattern:  ^/(_(profiler|wdt)|css|images|js)/
+             security: false
+
+         login:
+             pattern:  ^/demo/secured/login$
+             security: false
+
+         secured_area:
+             pattern:    ^/demo/secured/
+             form_login:
+                 check_path: /demo/secured/login_check
+                 login_path: /demo/secured/login
+             logout:
+                 path:   /demo/secured/logout
+                 target: /demo/
+             #anonymous: ~
+             #http_basic:
+             #    realm: "Secured Demo Area"
+         jamn_area_publica:
+            pattern: ^/notas/(demo|registro|activar|tarifas|contratar|login$)
+            security: false
+
+         jamn_area_protegida:
+            pattern: ^/notas
+            provider: base_datos
+            form_login:
+              login_path:  /notas/login
+              check_path:  /notas/login_check
+
+            logout:
+              path:   /notas/logout
+              target: /notas
+
+     access_control:
+        - { path: ^/notas/miespacio, roles: ROLE_PREMIUM }
+        - { path: ^/notas/administracion, roles: ROLE_ADMIN, requires_channel: https }
+        - { path: ^/notas, roles: ROLE_REGISTRADO }

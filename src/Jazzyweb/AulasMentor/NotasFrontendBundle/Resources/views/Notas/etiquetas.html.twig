@@ -1,0 +1,21 @@
+ 
+<div class="span2">
+    
+        <ul class="nav">
+            <li class="nav-header">Etiquetas</li>            
+            <li>                
+                <a href="{{ path("jamn_conetiqueta", {"etiqueta": 'todas'}) }}"> todas las notas</a>
+            </li>
+            {% for etiqueta in etiquetas %}
+                        
+            <a href="{{ path("jamn_conetiqueta", {"etiqueta": etiqueta.id}) }}">
+                <span class="label label-info">
+                   {{ etiqueta.texto }} ({{etiqueta.numeroDeNotas}})
+                </span>
+            </a>
+         
+            {% endfor%}
+                        
+        </ul>
+    
+</div><!--/span-->
