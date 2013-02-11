@@ -55,54 +55,43 @@
 
 {% block detalle_y_edicion %}
 
-<div id="confirma-borrado"></div>
-<button class="btn btn-primary" id="btn_hecho"><i class="icon-check"></i> hecho</button>
-<button class="btn btn-warning" id="btn_cancelar"><i class="icon-ban-circle"></i> cancelar</button>    
+    <div id="confirma-borrado"></div>
+    <button class="btn btn-primary" id="btn_hecho"><i class="icon-check"></i> hecho</button>
+    <button class="btn btn-warning" id="btn_cancelar"><i class="icon-ban-circle"></i> cancelar</button>    
 
 {%if edita %}
-<button class="btn btn-danger" id="btn_borrar" type="submit"><i class="icon-remove"></i> borrar</button>
-<form class="form-horizontal" id="form_borrar" action="{{ path('jamn_borrar', { 'id': nota_seleccionada.id }) }}" method="post">
+    <button class="btn btn-danger" id="btn_borrar" type="submit"><i class="icon-remove"></i> borrar</button>
+    <form class="form-horizontal" id="form_borrar" action="{{ path('jamn_borrar', { 'id': nota_seleccionada.id }) }}" method="post">
     {{ form_widget(delete_form) }}
-</form>
+        </form>
 {% endif %}
 
 {% if edita %}
-<form id="form_nota" action="{{ path('jamn_editar', { 'id': nota_seleccionada.id }) }}" method="post" {{ form_enctype(form) }}>
+        <form id="form_nota"  class="form-horizontal" action="{{ path('jamn_editar', { 'id': nota_seleccionada.id }) }}" method="post" {{ form_enctype(form) }}>
 {%else%}
-<form id="form_nota" action="{{ path('jamn_nueva') }}" method="post" {{ form_enctype(form) }}>
+                <form id="form_nota"  class="form-horizontal" action="{{ path('jamn_nueva') }}" method="post" {{ form_enctype(form) }}>
 {% endif %}
-        
+
 {% if form_errors(form) %}
 {{ form_errors(form) }}
 {% endif %}
+                        <div class="control-group">
+                            <fieldset>
 
-  <fieldset>
-    
-    <label>Título:</label>
+                                <label>Título:</label>
     {{ form_widget(form.titulo) }}
     {% if form_errors(form.titulo) %}
     {{ form_errors(form.titulo) }}
     {% endif %}
-  
-    <label>Etiquetas:</label>
-    <ul id="nota_etiquetas">
-    {%for etiqueta in nota_seleccionada.etiquetas %}
-       <li>{{ etiqueta.texto }}</li>
-    {% endfor %}
-    </ul>
 
-    {% if form_errors(form.texto) %}
-    {{ form_errors(form.texto) }}
+                                <label>Link:</label>
+    {% if form_errors(form.link) %}
+    {{ form_errors(form.link) }}
     {% endif %}
-    {{ form_widget(form.texto) }}
+    {{ form_widget(form.link) }}
 
-    {% if nota_seleccionada.path  %}
-    {% set urlFile = asset( nota_seleccionada.webPath(app.user.getUsername) ) %}
-         <a href="{{ urlFile }}"><i class="icon-file"></i>{{ nota_seleccionada.path}}</a>
-    {% endif %}
-    
-    {% if is_granted('ROLE_PREMIUM') %}
-       <label>Cambiar:</label>
+                                {% if is_granted('ROLE_PREMIUM') %}
+                                <label>Fichero:</label>
        {% if form_errors(form.file) %}
           {{ form_errors(form.file) }}
        {% endif %}
@@ -110,9 +99,28 @@
        {{ form_widget(form.file) }}
     {% endif %}
 
+                                <label>Etiquetas:</label>
+                                <ul id="nota_etiquetas">
+    {%for etiqueta in nota_seleccionada.etiquetas %}
+                                        <li>{{ etiqueta.texto }}</li>
+    {% endfor %}
+                                    </ul>
+
+                                    <label>Texto:</label>
+    {% if form_errors(form.texto) %}
+    {{ form_errors(form.texto) }}
+    {% endif %}
+    {{ form_widget(form.texto) }}
+
+    {% if nota_seleccionada.path  %}
+    {% set urlFile = asset( nota_seleccionada.webPath(app.user.getUsername) ) %}
+                                    <a href="{{ urlFile }}"><i class="icon-file"></i>{{ nota_seleccionada.path}}</a>
+    {% endif %}    
+
     {{ form_widget(form._token) }}
 
-  </fieldset>
-</form>
+                                </fieldset>
+                            </div>
+                        </form>
 
 {% endblock %}

@@ -8,12 +8,11 @@
             </li>
             {% for etiqueta in etiquetas %}
                         
-            <a href="{{ path("jamn_conetiqueta", {"etiqueta": etiqueta.id}) }}">
+           <a href="{{ path("jamn_conetiqueta", {"etiqueta": etiqueta.id}) }}">
                 <span class="label label-info">
                    {{ etiqueta.texto }} ({{etiqueta.numeroDeNotas}})
                 </span>
-            </a>
-         
+           </a>         
             {% endfor%}
                         
         </ul>

@@ -46,6 +46,15 @@ class Nota {
      * @ORM\Column(name="fecha", type="datetime", nullable=true)
      */
     private $fecha;
+    
+    /**
+     * @var string $link
+     *
+     * @ORM\Column(name="link", type="text", nullable=true)
+     * @Assert\Url()
+     */
+    private $link;
+    
 
     /**
      * @var string $path
@@ -251,5 +260,29 @@ class Nota {
     public function removeEtiqueta(\Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Etiqueta $etiquetas)
     {
         $this->etiquetas->removeElement($etiquetas);
+    }
+
+  
+    /**
+     * Set link
+     *
+     * @param string $link
+     * @return Nota
+     */
+    public function setLink($link)
+    {
+        $this->link = $link;
+    
+        return $this;
+    }
+
+    /**
+     * Get link
+     *
+     * @return string 
+     */
+    public function getLink()
+    {
+        return $this->link;
     }
 }

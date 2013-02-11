@@ -46,13 +46,20 @@ btnDelete.click(function(){
         {% endfor %}
       </li>
       
+      <li>
+      {% if nota_seleccionada.link %}
+              <a target="_blank" href="{{ nota_seleccionada.link }}"><i class="icon-bookmark"></i>{{ nota_seleccionada.link}}</a>            
+      {% endif %}
+      </li>
+      
       {% if nota_seleccionada.path %}
       <li>
          {% set urlFile = asset( nota_seleccionada.webPath(app.user.getUsername) ) %}
          <a href="{{ urlFile }}"><i class="icon-file"></i>{{ nota_seleccionada.path}}</a>                           
       </li>      
       {% endif %}
-
+            
+      
       <li>
          <h5>{{ nota_seleccionada.titulo }} <i>({{ nota_seleccionada.fecha.date }})</i> </h5> 
       </li>
