@@ -29,7 +29,7 @@
         {% endif %}
         
         $("#nota_etiquetas").tagit({ 
-            availableTags: [{%for etiqueta in etiquetas%} "{{ etiqueta.texto}}", {% endfor %}]                   
+            availableTags: [{%for etiqueta in alletiquetas%} "{{ etiqueta.texto}}", {% endfor %}]                   
         });                            
                
         $("#nota_texto").cleditor({

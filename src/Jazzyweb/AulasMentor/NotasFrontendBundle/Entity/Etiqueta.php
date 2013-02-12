@@ -39,12 +39,13 @@ class Etiqueta {
     /**
      * @ORM\ManyToMany(targetEntity="Usuario", mappedBy="etiquetas")
      */
-    private $usuario;
+    private $usuarios;
 
     ////FIN ASOCIACIONES////
 
     public function __construct() {
         $this->notas = new ArrayCollection();
+        $this->etiquetas = new ArrayCollection();
     }
 
     /**
@@ -133,4 +134,37 @@ class Etiqueta {
         return count($this->getNotas());
     }
 
+
+    /**
+     * Add usuario
+     *
+     * @param \Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Usuario $usuario
+     * @return Etiqueta
+     */
+    public function addUsuario(\Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Usuario $usuario)
+    {
+        $this->usuario[] = $usuario;
+    
+        return $this;
+    }
+
+    /**
+     * Remove usuario
+     *
+     * @param \Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Usuario $usuario
+     */
+    public function removeUsuario(\Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Usuario $usuario)
+    {
+        $this->usuario->removeElement($usuario);
+    }
+
+    /**
+     * Get usuarios
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getUsuarios()
+    {
+        return $this->usuarios;
+    }
 }

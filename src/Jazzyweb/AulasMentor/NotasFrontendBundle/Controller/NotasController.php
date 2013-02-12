@@ -57,13 +57,15 @@ class NotasController extends Controller {
 
     public function nuevaAction() {
         $request = $this->getRequest();
-        
+
         list($etiquetas, $notas, $nota_seleccionada) = $this->dameEtiquetasYNotas();
 
-        $em = $this->getDoctrine()->getEntityManager();        
+        $em = $this->getDoctrine()->getEntityManager();
 
-        $nota=new Nota();
-        $newForm = $this->createForm(new NotaType(), $nota);        
+        $allEtiquetas = $em->getRepository('JAMNotasFrontendBundle:Etiqueta')->
+                findAllOrderedByTexto();
+        $nota = new Nota();
+        $newForm = $this->createForm(new NotaType(), $nota);
 
         if ($request->getMethod() == "POST") {
 
@@ -84,19 +86,20 @@ class NotasController extends Controller {
                 $em->persist($nota);
 
                 $em->flush();
-                
+
                 $session = $this->get('session');
                 $session->set('nota.seleccionada.id', $request->get('id'));
-                                
+
                 return $this->redirect($this->generateUrl('jamn_homepage'));
             }
         }
 
         return $this->render('JAMNotasFrontendBundle:Notas:crearOEditar.html.twig', array(
                     'etiquetas' => $etiquetas,
+                    'alletiquetas' => $allEtiquetas,
                     'notas' => $notas,
                     'nota_seleccionada' => $nota,
-                    'form' => $newForm->createView(),                    
+                    'form' => $newForm->createView(),
                     'edita' => false,
                 ));
     }
@@ -108,6 +111,8 @@ class NotasController extends Controller {
 
         $em = $this->getDoctrine()->getEntityManager();
 
+        $allEtiquetas = $em->getRepository('JAMNotasFrontendBundle:Etiqueta')->
+                findAllOrderedByTexto();
         $nota = $em->getRepository('JAMNotasFrontendBundle:Nota')->find($id);
 
         if (!$nota) {
@@ -142,6 +147,7 @@ class NotasController extends Controller {
 
         return $this->render('JAMNotasFrontendBundle:Notas:crearOEditar.html.twig', array(
                     'etiquetas' => $etiquetas,
+                    'alletiquetas' => $allEtiquetas,
                     'notas' => $notas,
                     'nota_seleccionada' => $nota,
                     'form' => $editForm->createView(),
@@ -214,9 +220,9 @@ class NotasController extends Controller {
             $nota_selecionada_id = $session->get('nota.seleccionada.id');
             if (!is_null($nota_selecionada_id) && $nota_selecionada_id != '') {
                 $nota_seleccionada = $em->getRepository('JAMNotasFrontendBundle:Nota')->
-                        findOneById($nota_selecionada_id);                
+                        findOneById($nota_selecionada_id);
             } else {
-                $nota_seleccionada = $notas[0];                
+                $nota_seleccionada = $notas[0];
             }
             $nota_seleccionada->setSelected(true);
         }
@@ -240,17 +246,17 @@ class NotasController extends Controller {
 
         $nota->getEtiquetas()->clear();
 
-
         foreach ($tags as $tag) {
-            $etiqueta = $em->getRepository('JAMNotasFrontendBundle:Etiqueta')->findOneByTextoAndUsuario($tag, $usuario);
-
+            //$etiqueta = $em->getRepository('JAMNotasFrontendBundle:Etiqueta')->findOneByTextoAndUsuario($tag, $usuario);
+            $etiqueta = $em->getRepository('JAMNotasFrontendBundle:Etiqueta')->findOneByTexto($tag);
             if (!$etiqueta instanceof Etiqueta) {
                 $etiqueta = new Etiqueta();
                 $etiqueta->setTexto($tag);
-                $etiqueta->setUsuario($usuario);
                 $em->persist($etiqueta);
             }
-
+            if (!$usuario->hasEtiqueta($etiqueta)) {
+                $usuario->addEtiqueta($etiqueta);
+            }
             $nota->addEtiqueta($etiqueta);
         }
 

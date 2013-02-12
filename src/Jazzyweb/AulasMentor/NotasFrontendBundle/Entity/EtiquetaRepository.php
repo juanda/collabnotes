@@ -12,24 +12,47 @@ use Doctrine\ORM\EntityRepository;
  */
 class EtiquetaRepository extends EntityRepository {
 
+    public function findAllOrderedByTexto() {
+        $query = $this->getEntityManager()->createQuery(
+                        "SELECT e FROM JAMNotasFrontendBundle:Etiqueta e
+                       ORDER BY e.texto ASC");
+
+        $etiquetas = $query->getResult();        
+        return $etiquetas;
+    }
+
     public function findByUsuarioOrderedByTexto($username) {
         $query = $this->getEntityManager()->createQuery(
                         "SELECT e FROM JAMNotasFrontendBundle:Etiqueta e
-                      JOIN  e.usuario u where u.id = :username ORDER BY e.texto ASC")
+                      JOIN  e.usuarios u where u.id = :username ORDER BY e.texto ASC")
                 ->setParameters(array('username' => $username));
 
         $etiquetas = $query->getResult();
-        
-        foreach ($etiquetas as $e){
+
+        foreach ($etiquetas as $e) {
             $n = $e->getNumeroDeNotasDelUsuario($username);
-            $e->numNotas = $n;            
+            $e->numNotas = $n;
         }
         return $etiquetas;
     }
 
+    public function findOneByTexto($tag) {
+        $query = $this->getEntityManager()->createQuery(
+                        "SELECT e FROM JAMNotasFrontendBundle:Etiqueta e WHERE e.texto=:texto")
+                ->setParameters(array('texto' => $tag));
+
+        $result = $query->getResult();
+
+        if (count($result) > 0) {
+            return $result[0];
+        } else {
+            return null;
+        }
+    }
+
     public function findOneByTextoAndUsuario($tag, $user) {
         $query = $this->getEntityManager()->createQuery(
-                        "SELECT e FROM JAMNotasFrontendBundle:Etiqueta e JOIN e.usuario u where u.id = :user_id AND e.texto=:texto")
+                        "SELECT e FROM JAMNotasFrontendBundle:Etiqueta e JOIN e.usuarios u where u.id = :user_id AND e.texto=:texto")
                 ->setParameters(array('texto' => $tag, 'user_id' => $user->getId()));
 
         $result = $query->getResult();

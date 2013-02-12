@@ -153,7 +153,7 @@ class Usuario implements AdvancedUserInterface, \Serializable, EquatableInterfac
     private $contratos;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Etiqueta", inversedBy="usuario")
+     * @ORM\ManyToMany(targetEntity="Etiqueta", inversedBy="usuarios")
      */
     private $etiquetas;
 
@@ -492,6 +492,15 @@ class Usuario implements AdvancedUserInterface, \Serializable, EquatableInterfac
 
     public function isEqualTo(UserInterface $user) {
         return $this->username === $user->getUsername();
+    }
+    
+    public function hasEtiqueta($etiqueta){
+        
+        if(!$etiqueta instanceof Etiqueta)
+            throw new \Exception("El argumento no es del tipo Etiqueta");
+        
+        return $this->etiquetas->contains($etiqueta);
+    
     }
 
 }
