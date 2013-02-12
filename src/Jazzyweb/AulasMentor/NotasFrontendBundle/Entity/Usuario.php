@@ -153,7 +153,7 @@ class Usuario implements AdvancedUserInterface, \Serializable, EquatableInterfac
     private $contratos;
 
     /**
-     * @ORM\OneToMany(targetEntity="Etiqueta", mappedBy="usuario")
+     * @ORM\ManyToMany(targetEntity="Etiqueta", inversedBy="usuario")
      */
     private $etiquetas;
 

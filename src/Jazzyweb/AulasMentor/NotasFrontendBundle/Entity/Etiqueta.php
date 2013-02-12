@@ -11,8 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\EtiquetaRepository")
  */
-class Etiqueta
-{
+class Etiqueta {
 
     /**
      * @var integer $id
@@ -38,14 +37,13 @@ class Etiqueta
     private $notas;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Usuario")
+     * @ORM\ManyToMany(targetEntity="Usuario", mappedBy="etiquetas")
      */
     private $usuario;
 
     ////FIN ASOCIACIONES////
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->notas = new ArrayCollection();
     }
 
@@ -54,8 +52,7 @@ class Etiqueta
      *
      * @return integer 
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -64,8 +61,7 @@ class Etiqueta
      *
      * @param string $texto
      */
-    public function setTexto($texto)
-    {
+    public function setTexto($texto) {
         $this->texto = $texto;
     }
 
@@ -74,19 +70,16 @@ class Etiqueta
      *
      * @return string 
      */
-    public function getTexto()
-    {
+    public function getTexto() {
         return $this->texto;
     }
-
 
     /**
      * Add notas
      *
      * @param Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Nota $notas
      */
-    public function addNota(\Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Nota $notas)
-    {
+    public function addNota(\Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Nota $notas) {
         $this->notas[] = $notas;
     }
 
@@ -95,8 +88,7 @@ class Etiqueta
      *
      * @return Doctrine\Common\Collections\Collection 
      */
-    public function getNotas()
-    {
+    public function getNotas() {
         return $this->notas;
     }
 
@@ -105,8 +97,7 @@ class Etiqueta
      *
      * @param Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Usuario $usuario
      */
-    public function setUsuario(\Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Usuario $usuario)
-    {
+    public function setUsuario(\Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Usuario $usuario) {
         $this->usuario = $usuario;
     }
 
@@ -115,8 +106,7 @@ class Etiqueta
      *
      * @return Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Usuario 
      */
-    public function getUsuario()
-    {
+    public function getUsuario() {
         return $this->usuario;
     }
 
@@ -125,13 +115,22 @@ class Etiqueta
      *
      * @param \Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Nota $notas
      */
-    public function removeNota(\Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Nota $notas)
-    {
+    public function removeNota(\Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Nota $notas) {
         $this->notas->removeElement($notas);
     }
-    
-    public function getNumeroDeNotas(){
-        
+
+    public function getNumeroDeNotasDelUsuario($usuario) {
+
+        if (!$usuario instanceof Usuario)
+            throw new \Exception("El parámetro pasado no es un objeto del tipo Usuario");
+
+        $notas = $this->getNotas();
+        foreach ($notas as $n) {
+            if ($n->getUsuario() != $usuario)
+                $notas->removeElement($n);
+        }
+
         return count($this->getNotas());
     }
+
 }

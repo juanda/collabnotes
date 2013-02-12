@@ -18,7 +18,13 @@ class EtiquetaRepository extends EntityRepository {
                       JOIN  e.usuario u where u.id = :username ORDER BY e.texto ASC")
                 ->setParameters(array('username' => $username));
 
-        return $query->getResult();
+        $etiquetas = $query->getResult();
+        
+        foreach ($etiquetas as $e){
+            $n = $e->getNumeroDeNotasDelUsuario($username);
+            $e->numNotas = $n;            
+        }
+        return $etiquetas;
     }
 
     public function findOneByTextoAndUsuario($tag, $user) {
