@@ -20,6 +20,20 @@ jamn_conetiqueta:
      requirements:
          id:  \d+
          _method: GET
+         
+jamn_addtag:
+     pattern:  /addtag/{tag}
+     defaults: { _controller: JAMNotasFrontendBundle:Notas:index }
+     requirements:
+         id:  \d+
+         _method: GET
+
+jamn_removetag:
+     pattern:  /removetag/{tag}
+     defaults: { _controller: JAMNotasFrontendBundle:Notas:index }
+     requirements:
+         id:  \d+
+         _method: GET
 
 jamn_buscar:
      pattern:  /buscar

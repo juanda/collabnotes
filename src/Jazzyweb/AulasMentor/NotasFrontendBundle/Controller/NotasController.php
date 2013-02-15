@@ -27,6 +27,28 @@ class NotasController extends Controller {
 
                 break;
 
+            case 'jamn_addtag':
+                $tags = $session->get('search.values');
+                $tags[] = $request->get('tag');
+                $session->set('busqueda.tipo', 'por_etiqueta');
+                $session->set('search.values', $tags);
+                $session->set('nota.seleccionada.id', '');
+                break;
+            
+            case 'jamn_removetag':
+                $tags = $session->get('search.values');                                
+                $tag = $request->get('tag');
+                $tags = array_diff($tags, array($tag));   
+                
+                $session->set('busqueda.tipo', 'por_etiqueta');
+                $session->set('search.values', $tags);
+                $session->set('nota.seleccionada.id', '');
+                //exit;
+                break;
+
+            case 'jamn_removetag':
+                break;
+
             case 'jamn_buscar':
                 $session->set('busqueda.tipo', 'por_termino');
                 $session->set('busqueda.valor', $request->get('termino'));
