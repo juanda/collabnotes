@@ -21,37 +21,39 @@ class NotasController extends Controller {
                 break;
 
             case 'jamn_conetiqueta':
-                $session->set('busqueda.tipo', 'por_etiqueta');
-                $session->set('busqueda.valor', $request->get('etiqueta'));
+                $session->set('search.type', 'by_tags');
+                $session->set('search.value', $request->get('etiqueta'));
                 $session->set('nota.seleccionada.id', '');
 
                 break;
 
-            case 'jamn_addtag':
-                $tags = $session->get('search.values');
+            case 'jamn_addtag':                
+                $tags = $session->get('search.value');
+                if(!is_array($tags)){
+                    $tags = array();
+                }
                 $tags[] = $request->get('tag');
-                $session->set('busqueda.tipo', 'por_etiqueta');
-                $session->set('search.values', $tags);
+                $tags = array_unique($tags);
+                $session->set('search.type', 'by_tags');
+                $session->set('search.value', $tags);
                 $session->set('nota.seleccionada.id', '');
+                
                 break;
             
             case 'jamn_removetag':
-                $tags = $session->get('search.values');                                
+                $tags = $session->get('search.value');                                
                 $tag = $request->get('tag');
                 $tags = array_diff($tags, array($tag));   
                 
-                $session->set('busqueda.tipo', 'por_etiqueta');
-                $session->set('search.values', $tags);
+                $session->set('search.type', 'by_tags');
+                $session->set('search.value', $tags);
                 $session->set('nota.seleccionada.id', '');
                 //exit;
-                break;
-
-            case 'jamn_removetag':
-                break;
+                break;            
 
             case 'jamn_buscar':
-                $session->set('busqueda.tipo', 'por_termino');
-                $session->set('busqueda.valor', $request->get('termino'));
+                $session->set('search.type', 'by_term');
+                $session->set('search.value', $request->get('termino'));
                 $session->set('nota.seleccionada.id', '');
 
                 break;
@@ -59,7 +61,7 @@ class NotasController extends Controller {
                 $session->set('nota.seleccionada.id', $request->get('id'));
                 break;
         }
-
+                
         list($etiquetas, $notas, $notaSeleccionada) = $this->dameEtiquetasYNotas();
 
         // creamos un formulario para borrar la nota
@@ -217,19 +219,21 @@ class NotasController extends Controller {
 
         $usuario = $this->get('security.context')->getToken()->getUser();
 
-        $busqueda_tipo = $session->get('busqueda.tipo');
+        $busqueda_tipo = $session->get('search.type');
 
-        $busqueda_valor = $session->get('busqueda.valor');
-
+        $busqueda_valor = $session->get('search.value');
+        
+       // print_r($busqueda_valor);exit;
+        
         // Etiquetas. Se pillan todas
         $etiquetas = $em->getRepository('JAMNotasFrontendBundle:Etiqueta')->
                 findByUsuarioOrderedByTexto($usuario);
 
         // Notas. Se pillan según el filtro almacenado en la sesión
-        if ($busqueda_tipo == 'por_etiqueta' && $busqueda_valor != 'todas') {
+        if ($busqueda_tipo == 'by_tags' && $busqueda_valor != 'todas') {
             $notas = $em->getRepository('JAMNotasFrontendBundle:Nota')->
-                    findByUsuarioAndEtiqueta($usuario, $busqueda_valor);
-        } elseif ($busqueda_tipo == 'por_termino') {
+                    findByUsuarioAndEtiqueta($usuario->getUsername(), $busqueda_valor);
+        } elseif ($busqueda_tipo == 'by_term') {
             $notas = $em->getRepository('JAMNotasFrontendBundle:Nota')->
                     findByUsuarioAndTermino($usuario, $busqueda_valor);
         } else {
@@ -243,7 +247,7 @@ class NotasController extends Controller {
             if (!is_null($nota_selecionada_id) && $nota_selecionada_id != '') {
                 $nota_seleccionada = $em->getRepository('JAMNotasFrontendBundle:Nota')->
                         findOneById($nota_selecionada_id);
-            } else {
+            } else {                
                 $nota_seleccionada = $notas[0];
             }
             $nota_seleccionada->setSelected(true);

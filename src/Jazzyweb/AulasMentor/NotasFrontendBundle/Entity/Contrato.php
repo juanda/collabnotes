@@ -44,7 +44,7 @@ class Contrato
     private $tarifa;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Usuario")
+     * @ORM\ManyToOne(targetEntity="Usuario", inversedBy="contratos")
      */
     private $usuario;
 

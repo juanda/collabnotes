@@ -68,12 +68,12 @@ class Nota {
     /**
      * @Assert\File(maxSize="6000000")
      */
-    public $file;
+    private $file;
 
     ////ASOCIACIONES////
 
     /**
-     * @ORM\ManyToOne(targetEntity="Usuario")
+     * @ORM\ManyToOne(targetEntity="Usuario", inversedBy="notas")
      */
     private $usuario;
 
@@ -284,5 +284,14 @@ class Nota {
     public function getLink()
     {
         return $this->link;
+    }
+    
+    public function getFile(){
+        return $this->file;
+    }
+    
+    public function setFile($file){
+        
+        $this->file = $file;
     }
 }
