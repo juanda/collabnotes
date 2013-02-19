@@ -72,15 +72,16 @@ class Nota {
 
     ////ASOCIACIONES////
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Usuario", inversedBy="notas")
-     */
-    private $usuario;
 
     /**
      * @ORM\ManyToMany(targetEntity="Etiqueta", inversedBy="notas")
      */
     private $etiquetas;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="Tema", inversedBy="notas")
+     */
+    private $tema;
 
     ////FIN ASOCIACIONES////
 
@@ -167,24 +168,6 @@ class Nota {
      */
     public function getPath() {
         return $this->path;
-    }
-
-    /**
-     * Set usuario
-     *
-     * @param Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Usuario $usuario
-     */
-    public function setUsuario(\Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Usuario $usuario) {
-        $this->usuario = $usuario;
-    }
-
-    /**
-     * Get usuario
-     *
-     * @return Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Usuario 
-     */
-    public function getUsuario() {
-        return $this->usuario;
     }
 
     /**
@@ -293,5 +276,28 @@ class Nota {
     public function setFile($file){
         
         $this->file = $file;
+    }
+
+    /**
+     * Set tema
+     *
+     * @param \Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Tema $tema
+     * @return Nota
+     */
+    public function setTema(\Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Tema $tema = null)
+    {
+        $this->tema = $tema;
+    
+        return $this;
+    }
+
+    /**
+     * Get tema
+     *
+     * @return \Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Tema 
+     */
+    public function getTema()
+    {
+        return $this->tema;
     }
 }

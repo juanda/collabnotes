@@ -140,34 +140,33 @@ class Usuario implements AdvancedUserInterface, \Serializable, EquatableInterfac
         return $this->password_again;
     }
 
-    ////ASOCIACIONES////
-
-    /**
-     * @ORM\OneToMany(targetEntity="Nota", mappedBy="usuario")
-     */
-    private $notas;
+    ////ASOCIACIONES////    
 
     /**
      * @ORM\OneToMany(targetEntity="Contrato", mappedBy="usuario")
      */
-    private $contratos;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="Etiqueta", inversedBy="usuarios")
-     */
-    private $etiquetas;
+    private $contratos;    
 
     /**
      * @ORM\ManyToMany(targetEntity="Grupo", inversedBy="usuarios")
      */
     private $grupos;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Tema", mappedBy="propietario")
+     */
+    private $misTemas;
+    
+    /** 
+     * @ORM\ManyToMany(targetEntity="Tema", mappedBy="usuarios")
+     */
+    private $temasCompartidos;
 
     ////FIN ASOCIACIONES////
 
     public function __construct() {
         $this->notas = new ArrayCollection();
-        $this->contratos = new ArrayCollection();
-        $this->etiquetas = new ArrayCollection();
+        $this->contratos = new ArrayCollection();        
         $this->grupos = new ArrayCollection();
     }
 
@@ -325,24 +324,6 @@ class Usuario implements AdvancedUserInterface, \Serializable, EquatableInterfac
     }
 
     /**
-     * Add notas
-     *
-     * @param Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Nota $notas
-     */
-    public function addNota(\Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Nota $notas) {
-        $this->notas[] = $notas;
-    }
-
-    /**
-     * Get notas
-     *
-     * @return Doctrine\Common\Collections\Collection 
-     */
-    public function getNotas() {
-        return $this->notas;
-    }
-
-    /**
      * Add contratos
      *
      * @param Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Contrato $contratos
@@ -358,26 +339,8 @@ class Usuario implements AdvancedUserInterface, \Serializable, EquatableInterfac
      */
     public function getContratos() {
         return $this->contratos;
-    }
-
-    /**
-     * Add etiquetas
-     *
-     * @param Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Etiqueta $etiquetas
-     */
-    public function addEtiqueta(\Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Etiqueta $etiquetas) {
-        $this->etiquetas[] = $etiquetas;
-    }
-
-    /**
-     * Get etiquetas
-     *
-     * @return Doctrine\Common\Collections\Collection 
-     */
-    public function getEtiquetas() {
-        return $this->etiquetas;
-    }
-
+    }    
+   
     /**
      * Add grupos
      *
@@ -452,16 +415,7 @@ class Usuario implements AdvancedUserInterface, \Serializable, EquatableInterfac
      */
     public function removeContrato(\Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Contrato $contratos) {
         $this->contratos->removeElement($contratos);
-    }
-
-    /**
-     * Remove etiquetas
-     *
-     * @param \Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Etiqueta $etiquetas
-     */
-    public function removeEtiqueta(\Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Etiqueta $etiquetas) {
-        $this->etiquetas->removeElement($etiquetas);
-    }
+    }    
 
     /**
      * Remove grupos
@@ -494,13 +448,70 @@ class Usuario implements AdvancedUserInterface, \Serializable, EquatableInterfac
         return $this->username === $user->getUsername();
     }
     
-    public function hasEtiqueta($etiqueta){
-        
-        if(!$etiqueta instanceof Etiqueta)
-            throw new \Exception("El argumento no es del tipo Etiqueta");
-        
-        return $this->etiquetas->contains($etiqueta);
+
+    /**
+     * Add misTemas
+     *
+     * @param \Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Tema $misTemas
+     * @return Usuario
+     */
+    public function addMisTema(\Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Tema $misTemas)
+    {
+        $this->misTemas[] = $misTemas;
     
+        return $this;
     }
 
+    /**
+     * Remove misTemas
+     *
+     * @param \Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Tema $misTemas
+     */
+    public function removeMisTema(\Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Tema $misTemas)
+    {
+        $this->misTemas->removeElement($misTemas);
+    }
+
+    /**
+     * Get misTemas
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getMisTemas()
+    {
+        return $this->misTemas;
+    }
+
+    /**
+     * Add temasCompartidos
+     *
+     * @param \Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Tema $temasCompartidos
+     * @return Usuario
+     */
+    public function addTemasCompartido(\Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Tema $temasCompartidos)
+    {
+        $this->temasCompartidos[] = $temasCompartidos;
+    
+        return $this;
+    }
+
+    /**
+     * Remove temasCompartidos
+     *
+     * @param \Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Tema $temasCompartidos
+     */
+    public function removeTemasCompartido(\Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Tema $temasCompartidos)
+    {
+        $this->temasCompartidos->removeElement($temasCompartidos);
+    }
+
+    /**
+     * Get temasCompartidos
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTemasCompartidos()
+    {
+        return $this->temasCompartidos;
+    }
 }

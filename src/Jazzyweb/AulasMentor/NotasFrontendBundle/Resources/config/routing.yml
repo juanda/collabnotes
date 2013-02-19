@@ -35,6 +35,12 @@ jamn_removetag:
          id:  \d+
          _method: GET
 
+jamn_homepage:
+     pattern:  /changesubject/{subject}
+     defaults: { _controller: JAMNotasFrontendBundle:Notas:index }
+     requirements:
+       _method: GET
+
 jamn_buscar:
      pattern:  /buscar
      defaults: { _controller: JAMNotasFrontendBundle:Notas:index, etiqueta: termino }

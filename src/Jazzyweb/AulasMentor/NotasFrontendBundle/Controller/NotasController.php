@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Nota;
 use Jazzyweb\AulasMentor\NotasFrontendBundle\Form\Type\NotaType;
 use Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Etiqueta;
+use Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Tema;
 
 class NotasController extends Controller {
 
@@ -27,9 +28,9 @@ class NotasController extends Controller {
 
                 break;
 
-            case 'jamn_addtag':                
+            case 'jamn_addtag':
                 $tags = $session->get('search.value');
-                if(!is_array($tags)){
+                if (!is_array($tags)) {
                     $tags = array();
                 }
                 $tags[] = $request->get('tag');
@@ -37,19 +38,19 @@ class NotasController extends Controller {
                 $session->set('search.type', 'by_tags');
                 $session->set('search.value', $tags);
                 $session->set('nota.seleccionada.id', '');
-                
+
                 break;
-            
+
             case 'jamn_removetag':
-                $tags = $session->get('search.value');                                
+                $tags = $session->get('search.value');
                 $tag = $request->get('tag');
-                $tags = array_diff($tags, array($tag));   
-                
+                $tags = array_diff($tags, array($tag));
+
                 $session->set('search.type', 'by_tags');
                 $session->set('search.value', $tags);
                 $session->set('nota.seleccionada.id', '');
                 //exit;
-                break;            
+                break;
 
             case 'jamn_buscar':
                 $session->set('search.type', 'by_term');
@@ -60,9 +61,14 @@ class NotasController extends Controller {
             case 'jamn_nota':
                 $session->set('nota.seleccionada.id', $request->get('id'));
                 break;
+            case 'changesubject':
+                $session->set('search.value', $tags);
+                $session->set('nota.seleccionada.id', '');
+                $session->set('subject', $request->get('subject'));
+                break;
         }
-                
-        list($etiquetas, $notas, $notaSeleccionada) = $this->dameEtiquetasYNotas();
+
+        list($temas, $etiquetas, $notas, $notaSeleccionada) = $this->dameTemasEtiquetasYNotas();
 
         // creamos un formulario para borrar la nota
         if ($notaSeleccionada instanceof Nota) {
@@ -72,6 +78,7 @@ class NotasController extends Controller {
         }
 
         return $this->render('JAMNotasFrontendBundle:Notas:index.html.twig', array(
+                    'temas' => $temas,
                     'etiquetas' => $etiquetas,
                     'notas' => $notas,
                     'nota_seleccionada' => $notaSeleccionada,
@@ -82,7 +89,7 @@ class NotasController extends Controller {
     public function nuevaAction() {
         $request = $this->getRequest();
 
-        list($etiquetas, $notas, $nota_seleccionada) = $this->dameEtiquetasYNotas();
+        list($temas, $etiquetas, $notas, $nota_seleccionada) = $this->dameTemasEtiquetasYNotas();
 
         $em = $this->getDoctrine()->getEntityManager();
 
@@ -119,6 +126,7 @@ class NotasController extends Controller {
         }
 
         return $this->render('JAMNotasFrontendBundle:Notas:crearOEditar.html.twig', array(
+                    'temas' => $temas,
                     'etiquetas' => $etiquetas,
                     'alletiquetas' => $allEtiquetas,
                     'notas' => $notas,
@@ -131,7 +139,7 @@ class NotasController extends Controller {
     public function editarAction() {
         $request = $this->getRequest();
         $id = $request->get('id');
-        list($etiquetas, $notas, $nota_seleccionada) = $this->dameEtiquetasYNotas();
+        list($temas, $etiquetas, $notas, $nota_seleccionada) = $this->dameTemasEtiquetasYNotas();
 
         $em = $this->getDoctrine()->getEntityManager();
 
@@ -170,6 +178,7 @@ class NotasController extends Controller {
         }
 
         return $this->render('JAMNotasFrontendBundle:Notas:crearOEditar.html.twig', array(
+                    'temas' => $temas,
                     'etiquetas' => $etiquetas,
                     'alletiquetas' => $allEtiquetas,
                     'notas' => $notas,
@@ -213,7 +222,7 @@ class NotasController extends Controller {
         
     }
 
-    protected function dameEtiquetasYNotas() {
+    protected function dameTemasEtiquetasYNotas() {
         $session = $this->get('session');
         $em = $this->getDoctrine()->getEntityManager();
 
@@ -223,16 +232,30 @@ class NotasController extends Controller {
 
         $busqueda_valor = $session->get('search.value');
         
-       // print_r($busqueda_valor);exit;
+
+        // print_r($busqueda_valor);exit;
+        // Temas. Pillamos todos los temas del usuario
+        // 
+        $temas = $em->getRepository('JAMNotasFrontendBundle:Tema')->
+                findByUsuarioOrderedByNombre($usuario);
+        // Etiquetas. Se pillan todas las etiquetas en las que el usuario tiene
+        // alguna nota
         
-        // Etiquetas. Se pillan todas
+        if ($session->has('subject')) {
+            $temaId = $session->get('subject');
+        }else if(count($temas)>0 && $temas[0] instanceof Tema){
+            $temaId = $temas[0]->getId();
+        }else{
+            $temaId = 0;
+        }
+        $tema = $em->getRepository('JAMNotasFrontendBundle:Tema')->find($temaId);
         $etiquetas = $em->getRepository('JAMNotasFrontendBundle:Etiqueta')->
-                findByUsuarioOrderedByTexto($usuario);
+                findByTemaOrderedByTexto($tema);
 
         // Notas. Se pillan según el filtro almacenado en la sesión
         if ($busqueda_tipo == 'by_tags' && $busqueda_valor != 'todas') {
             $notas = $em->getRepository('JAMNotasFrontendBundle:Nota')->
-                    findByUsuarioAndEtiqueta($usuario->getUsername(), $busqueda_valor);
+                    findByTemaAndEtiqueta($tema, $busqueda_valor);
         } elseif ($busqueda_tipo == 'by_term') {
             $notas = $em->getRepository('JAMNotasFrontendBundle:Nota')->
                     findByUsuarioAndTermino($usuario, $busqueda_valor);
@@ -247,13 +270,13 @@ class NotasController extends Controller {
             if (!is_null($nota_selecionada_id) && $nota_selecionada_id != '') {
                 $nota_seleccionada = $em->getRepository('JAMNotasFrontendBundle:Nota')->
                         findOneById($nota_selecionada_id);
-            } else {                
+            } else {
                 $nota_seleccionada = $notas[0];
             }
             $nota_seleccionada->setSelected(true);
         }
 
-        return array($etiquetas, $notas, $nota_seleccionada);
+        return array($temas, $etiquetas, $notas, $nota_seleccionada);
     }
 
     protected function createDeleteForm($id) {

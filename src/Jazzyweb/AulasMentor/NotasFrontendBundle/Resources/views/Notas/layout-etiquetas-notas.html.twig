@@ -3,25 +3,25 @@
 {% block stylesheets%}
 {% include 'JAMNotasFrontendBundle:braincrafted:_stylesheets.html.twig' %}
 <style>
-      body {
-        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-      }
-</style>
+        body {
+            padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+        }
+    </style>
 
 {% endblock%}
 
 {% block javascripts %}
 {% include 'JAMNotasFrontendBundle:braincrafted:_javascripts.html.twig' %}
 
-<script>            
+    <script>            
 
-var btnLogout = $("#btn_logout");
+    var btnLogout = $("#btn_logout");
         
-btnLogout.click(function(){
-     window.location = '{{ path('jamn_logout') }}';
-});
+    btnLogout.click(function(){
+         window.location = '{{ path('jamn_logout') }}';
+    });
    
-</script>
+        </script>
 {% endblock %}
 
 
@@ -29,23 +29,27 @@ btnLogout.click(function(){
 
     {% include 'JAMNotasFrontendBundle:Notas:cabecera.html.twig' %}
 
-    <div class="container-fluid">
-        <div class="row-fluid">
-    {% include 'JAMNotasFrontendBundle:Notas:etiquetas.html.twig' %}
+        <div class="container-fluid">
+            <div class="row-fluid">
 
+                <div class="span2">   
+    {% include 'JAMNotasFrontendBundle:Notas:temas.html.twig' %}
+    {% include 'JAMNotasFrontendBundle:Notas:etiquetas.html.twig' %}
+                    </div>
+                
     {% include 'JAMNotasFrontendBundle:Notas:notas.html.twig' %}
-  
-    <div class="span6">
-       
-          <ul class="nav nav-list">  
-              <li class="nav-header">Detalle Notas</li> 
+
+                    <div class="span6">
+
+                        <ul class="nav nav-list">  
+                            <li class="nav-header">Detalle Notas</li> 
     {% block detalle_y_edicion %}
     {% endblock %}                    
-          </ul>
-       
-    </div>
+                        </ul>
+
+                    </div>
         {% include 'JAMNotasFrontendBundle:Notas:pie.html.twig' %}        
-  </div>
-</div>
+                </div>
+            </div>
 
 {% endblock %} 

@@ -34,4 +34,66 @@ Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Usuario:
         email: <email()>
         isActive: 1
         grupos: [@grupo3]
+
+Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Etiqueta:
+  etiqueta{1..5}:
+        texto: <word()>_tag        
+  etiqueta{5..10}:
+        texto: <word()>_tag        
+  etiqueta{11..15}:
+        texto: <word()>_tag
+
+Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Tema:
+  tema{1..10}:
+        nombre: <word()>_tema
+        descripcion: <sentence()>
+        propietario: @usuario11
+        usuarios: [@usuario12, @usuario13,@usuario14]
+        etiquetas: [@etiqueta1, @etiqueta2, @etiqueta3]
+  tema{11..20}:
+        nombre: <word()>_tema
+        descripcion: <sentence()>
+        propietario: @usuario12
+        usuarios: [@usuario14, @usuario16,@usuario19]  
+        etiquetas: [@etiqueta4, @etiqueta5, @etiqueta6]
+
+Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Nota:
+  nota{1..5}:
+        titulo: <sentence()>
+        texto: <text(150)>
+        fecha: <dateTime()>
+        link: <url()>
+        etiquetas: [@etiqueta1, @etiqueta2]
+        tema: @tema1
+  nota{6..10}:
+        titulo: <sentence()>
+        texto: <text(150)>
+        fecha: <dateTime()>
+        link: <url()>
+        etiquetas: [@etiqueta1, @etiqueta3, @etiqueta5]
+        tema: @tema2
+  nota{11..20}:
+        titulo: <sentence()>
+        texto: <text(150)>
+        fecha: <dateTime()>
+        link: <url()>
+        etiquetas: [@etiqueta5, @etiqueta6, @etiqueta8]
+        tema: @tema3
+  nota{21..30}:
+        titulo: <sentence()>
+        texto: <text(150)>
+        fecha: <dateTime()>
+        link: <url()>
+        etiquetas: [@etiqueta7, @etiqueta10, @etiqueta3]
+        tema: @tema11
+  nota{31..40}:
+        titulo: <sentence()>
+        texto: <text(150)>
+        fecha: <dateTime()>
+        link: <url()>
+        etiquetas: [@etiqueta7, @etiqueta8, @etiqueta4]
+        tema: @tema12
+        
+        
+        
   

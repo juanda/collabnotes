@@ -35,6 +35,21 @@ class EtiquetaRepository extends EntityRepository {
         }
         return $etiquetas;
     }
+    
+     public function findByTemaOrderedByTexto($tema) {
+        $query = $this->getEntityManager()->createQuery(
+                        "SELECT e FROM JAMNotasFrontendBundle:Etiqueta e
+                      JOIN  e.temas t where t = :tema ORDER BY e.texto ASC")
+                ->setParameters(array('tema' => $tema));
+
+        $etiquetas = $query->getResult();
+
+        foreach ($etiquetas as $e) {
+            $n = $e->getNumeroDeNotasDelTema($tema);
+            $e->numNotas = $n;
+        }
+        return $etiquetas;
+    }
 
     public function findOneByTexto($tag) {
         $query = $this->getEntityManager()->createQuery(

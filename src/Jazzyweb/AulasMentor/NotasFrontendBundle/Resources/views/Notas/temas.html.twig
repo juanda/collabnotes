@@ -1,27 +1,9 @@
- 
-<div class="span2">    
-    <ul class="nav">
-        <li class="nav-header">Etiquetas</li>            
-        <li>                
-            <a href="{{ path("jamn_conetiqueta", {"etiqueta": 'todas'}) }}"> todas las notas</a>
-        </li>
-            {% for etiqueta in etiquetas %}
+<ul class="nav">
+    <li class="nav-header">Temas</li> 
 
-           {% if etiqueta.id in app.session.get('search.value') %}
-        <a href="{{ path("jamn_removetag", {"tag": etiqueta.id}) }}">
-            <span class="label label-success">
-                   {{ etiqueta.texto }} ({{etiqueta.numNotas}})
-                </span>
-            </a>  
-            {% else %}
-            <a href="{{ path("jamn_addtag", {"tag": etiqueta.id}) }}">
-                <span class="label label-info">
-                   {{ etiqueta.texto }} ({{etiqueta.numNotas}})
-                    </span>
-                </a>  
-            {% endif %}
-            {% endfor%}
-
-            </ul>
-
-        </div><!--/span-->
+    <select id="select_temas">
+        {% for tema in temas %}
+        <option id="{{  tema.id }}">{{ tema.nombre }}</option>
+        {% endfor %}        
+    </select>
+</ul>

@@ -37,9 +37,9 @@ class Etiqueta {
     private $notas;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Usuario", mappedBy="etiquetas")
+     * @ORM\ManyToMany(targetEntity="Tema", mappedBy="etiquetas")
      */
-    private $usuarios;
+    private $temas;
 
     ////FIN ASOCIACIONES////
 
@@ -93,23 +93,7 @@ class Etiqueta {
         return $this->notas;
     }
 
-    /**
-     * Set usuario
-     *
-     * @param Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Usuario $usuario
-     */
-    public function setUsuario(\Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Usuario $usuario) {
-        $this->usuario = $usuario;
-    }
 
-    /**
-     * Get usuario
-     *
-     * @return Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Usuario 
-     */
-    public function getUsuario() {
-        return $this->usuario;
-    }
 
     /**
      * Remove notas
@@ -132,39 +116,52 @@ class Etiqueta {
         }
 
         return count($this->getNotas());
-    }
+    } 
+    
+    public function getNumeroDeNotasDelTema($tema) {
 
+        if (!$tema instanceof Tema)
+            throw new \Exception("El parámetro pasado no es un objeto del tipo Tema");
+
+        $notas = $this->getNotas();
+        foreach ($notas as $n) {
+            if ($n->getTema() != $tema)
+                $notas->removeElement($n);
+        }
+
+        return count($this->getNotas());
+    } 
 
     /**
-     * Add usuario
+     * Add temas
      *
-     * @param \Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Usuario $usuario
+     * @param \Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Tema $temas
      * @return Etiqueta
      */
-    public function addUsuario(\Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Usuario $usuario)
+    public function addTema(\Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Tema $temas)
     {
-        $this->usuario[] = $usuario;
+        $this->temas[] = $temas;
     
         return $this;
     }
 
     /**
-     * Remove usuario
+     * Remove temas
      *
-     * @param \Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Usuario $usuario
+     * @param \Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Tema $temas
      */
-    public function removeUsuario(\Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Usuario $usuario)
+    public function removeTema(\Jazzyweb\AulasMentor\NotasFrontendBundle\Entity\Tema $temas)
     {
-        $this->usuario->removeElement($usuario);
+        $this->temas->removeElement($temas);
     }
 
     /**
-     * Get usuarios
+     * Get temas
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getUsuarios()
+    public function getTemas()
     {
-        return $this->usuarios;
+        return $this->temas;
     }
 }

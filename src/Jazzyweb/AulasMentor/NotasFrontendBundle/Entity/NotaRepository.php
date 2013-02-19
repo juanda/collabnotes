@@ -14,12 +14,12 @@ class NotaRepository extends EntityRepository {
 
     /**
      * 
-     * @param string $username the username
+     * @param Tema $tema 
      * @param array $tags an array of tags id's
      * @return array an array of the user notes which have all the tags given by $tags
      * @throws \Exception
      */
-    public function findByUsuarioAndEtiqueta($username, $tags) {
+    public function findByTemaAndEtiqueta($tema, $tags) {
 //        print_r($tags);exit;
         if (!is_array($tags)) {
             throw new \Exception("tags must be an array of tags id's");
@@ -43,9 +43,9 @@ class NotaRepository extends EntityRepository {
         $query = $this->getEntityManager()->createQuery(
                         "SELECT n FROM JAMNotasFrontendBundle:Nota n
                          JOIN  n.etiquetas e
-                         JOIN n.usuario u
-                         WHERE e.id in (" . $inTags . ") and u.username=:username")
-                ->setParameters(array('username' => $username));
+                         JOIN n.tema t
+                         WHERE e.id in (" . $inTags . ") and t=:tema")
+                ->setParameters(array('tema' => $tema));
 
 
         $notes = $query->getResult();
